@@ -24,6 +24,8 @@ spec:
       labels:
         app: nestapp
     spec:
+      imagePullSecrets:
+        - name: docker-secret
       serviceAccountName: nest-ms-service-account
       containers:
       - name: nestapp
