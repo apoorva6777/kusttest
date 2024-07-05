@@ -10,8 +10,8 @@ namePrefix: 'qa-'
 
 images:
 - name: xyz/details-test
-  newName: iad.ocir.io/idmaqhrbiuyo/nest-readiness-check
-  newTag: v0.0.2
+  newName: apoorva6777/dvss-backend-microservice-boilerplate
+  newTag: :latest
 
 replicas:
 - name: nest-ms-deployment

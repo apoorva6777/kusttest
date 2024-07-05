@@ -4,14 +4,14 @@ kind: Kustomization
 resources:
 - ../../base
 
-namespace: dev
+namespace: dvss-apps-ns-dev
 
 namePrefix: 'dev-'
 
 images:
 - name: xyz/details-test
-  newName: iad.ocir.io/idmaqhrbiuyo/nest-readiness-check
-  newTag: v0.0.2
+  newName: apoorva6777/dvss-backend-microservice-boilerplate
+  newTag: :latest
 
 replicas:
 - name: nest-ms-deployment
@@ -49,7 +49,7 @@ patches:
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: dev
+      value: dvss-apps-ns-dev
     - op: replace
       path: /spec/selector/matchLabels/app
       value: nest-ms-dev
@@ -59,7 +59,7 @@ patches:
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: dev
+      value: dvss-apps-ns-dev
     - op: replace
       path: /spec/targetRefs/0/name
       value: dev-nest-ms-service
@@ -70,7 +70,7 @@ patches:
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: dev
+      value: dvss-apps-ns-dev
 
 - target:
     kind: Ingress
