@@ -4,14 +4,14 @@ kind: Kustomization
 resources:
 - ../../base
 
-namespace: staging
+namespace: dvss-apps-ns-staging
 
 namePrefix: 'staging-'
 
 images:
 - name: xyz/details-test
   newName: apoorva6777/dvss-backend-microservice-boilerplate
-  newTag: :latest
+  newTag: latest
 
 replicas:
 - name: nest-ms-deployment
@@ -49,7 +49,7 @@ patches:
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: staging
+      value: dvss-apps-ns-staging
     - op: replace
       path: /spec/selector/matchLabels/app
       value: nest-ms-staging
@@ -59,18 +59,18 @@ patches:
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: staging
+      value: dvss-apps-ns-staging
     - op: replace
       path: /spec/targetRefs/0/name
       value: staging-nest-ms-service
 
 - target:
     kind: ClusterRoleBinding
-    name: sa-crb
+    name: staging-sa-crb
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: staging
+      value: dvss-apps-ns-staging
 
 - target:
     kind: Ingress

@@ -4,14 +4,14 @@ kind: Kustomization
 resources:
 - ../../base
 
-namespace: qa
+namespace: dvss-apps-ns-qa
 
 namePrefix: 'qa-'
 
 images:
 - name: xyz/details-test
   newName: apoorva6777/dvss-backend-microservice-boilerplate
-  newTag: :latest
+  newTag: latest
 
 replicas:
 - name: nest-ms-deployment
@@ -49,7 +49,7 @@ patches:
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: qa
+      value: dvss-apps-ns-qa
     - op: replace
       path: /spec/selector/matchLabels/app
       value: nest-ms-qa
@@ -59,18 +59,18 @@ patches:
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: qa
+      value: dvss-apps-ns-qa
     - op: replace
       path: /spec/targetRefs/0/name
       value: qa-nest-ms-service
 
 - target:
     kind: ClusterRoleBinding
-    name: sa-crb
+    name: qa-sa-crb
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: qa
+      value: dvss-apps-ns-qa
 
 - target:
     kind: Ingress

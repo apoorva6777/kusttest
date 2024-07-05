@@ -4,14 +4,14 @@ kind: Kustomization
 resources:
 - ../../base
 
-namespace: vapt
+namespace: dvss-apps-ns-vapt
 
 namePrefix: 'vapt-'
 
 images:
 - name: xyz/details-test
   newName: apoorva6777/dvss-backend-microservice-boilerplate
-  newTag: :latest
+  newTag: latest
 
 replicas:
 - name: nest-ms-deployment
@@ -49,7 +49,7 @@ patches:
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: vapt
+      value: dvss-apps-ns-vapt
     - op: replace
       path: /spec/selector/matchLabels/app
       value: nest-ms-vapt
@@ -59,18 +59,18 @@ patches:
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: vapt
+      value: dvss-apps-ns-vapt
     - op: replace
       path: /spec/targetRefs/0/name
       value: vapt-nest-ms-service
 
 - target:
     kind: ClusterRoleBinding
-    name: sa-crb
+    name: vapt-sa-crb
   patch: |-
     - op: replace
       path: /metadata/namespace
-      value: vapt
+      value: dvss-apps-ns-vapt
 
 - target:
     kind: Ingress
