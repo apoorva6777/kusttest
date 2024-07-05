@@ -11,7 +11,7 @@ namePrefix: 'dev-'
 images:
 - name: xyz/details-test
   newName: apoorva6777/dvss-backend-microservice-boilerplate
-  newTag: :latest
+  newTag: latest
 
 replicas:
 - name: nest-ms-deployment
