@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nest-ms-service-account
+  namespace: test_base_ns
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+--- 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nest-ms-deployment
+  namespace: test_base_ns
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  selector:
+    matchLabels:
+      app: nestapp
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nestapp
+    spec:
+      serviceAccountName: nest-ms-service-account
+      containers:
+      - name: nestapp
+        image: xyz/details-test:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            cpu: "512m" 
+            memory: "512Mi"
+          requests:
+            cpu: "512m"
+            memory: "512Mi"
+        env:
+          - name: DATABASE_HOST
+            value: "user.caane5x2ddzn.us-east-1.rds.amazonaws.com"
+          - name: DATABASE_USER
+            value: "root"
+          - name: DATABASE_PASSWORD
+            value: "rootuser"
+          - name: DATABASE_NAME
+            value: "user"
+          - name: REDIS_PASSWORD
+            value: "rRmupSSTfoRG2265xQPh6TiSlHNaIhtq"
+          - name: REDIS_HOST
+            value: "redis-14873.c44.us-east-1-2.ec2.redns.redis-cloud.com"
+          - name: REDIS_PORT
+            value: "14873"
+--- 
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nest-ms-deployment-hpa
+  namespace: test_base_ns
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource: 
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization  
+          averageUtilization: 70
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nest-ms-deployment
+
+

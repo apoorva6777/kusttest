@@ -1,0 +1,88 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../base
+
+namespace: vapt
+
+namePrefix: 'vapt-'
+
+images:
+- name: xyz/details-test
+  newName: apoorva6777/details-test
+  newTag: latest
+
+replicas:
+- name: details-deployment
+  count: 2
+
+patches:
+- target:
+    kind: HorizontalPodAutoscaler
+    name: vapt-details-deployment-hpa
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: details-deployment-hpa
+    - op: replace
+      path: /spec/minReplicas
+      value: "2"
+
+- target:
+    kind: Deployment
+    name: details-deployment
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: details-deployment-vapt
+    - op: replace
+      path: /spec/template/metadata/labels/app
+      value: details-vapt
+    - op: replace
+      path: /spec/selector/matchLabels/app
+      value: details-vapt
+
+- target:
+    kind: AuthorizationPolicy
+    name: productpage-viewer-1
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: vapt
+    - op: replace
+      path: /spec/selector/matchLabels/app
+      value: details-vapt
+- target:
+    kind: AuthorizationPolicy
+    name: productpage-viewer
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: vapt
+    - op: replace
+      path: /spec/targetRefs/0/name
+      value: vapt-details-service
+
+- target:
+    kind: ClusterRoleBinding
+    name: sa-crb
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: vapt
+
+- target:
+    kind: Ingress
+    name: details-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: product.vapt.com
+- target:
+    kind: Service
+    name: details-service
+  patch: |-
+    - op: replace
+      path: /spec/selector/app
+      value: details-vapt

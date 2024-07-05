@@ -1,0 +1,88 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../base
+
+namespace: qa
+
+namePrefix: 'qa-'
+
+images:
+- name: xyz/details-test
+  newName: apoorva6777/details-test
+  newTag: latest
+
+replicas:
+- name: details-deployment
+  count: 2
+
+patches:
+- target:
+    kind: HorizontalPodAutoscaler
+    name: qa-details-deployment-hpa
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: details-deployment-hpa
+    - op: replace
+      path: /spec/minReplicas
+      value: "2"
+
+- target:
+    kind: Deployment
+    name: details-deployment
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: details-deployment-qa
+    - op: replace
+      path: /spec/template/metadata/labels/app
+      value: details-qa
+    - op: replace
+      path: /spec/selector/matchLabels/app
+      value: details-qa
+
+- target:
+    kind: AuthorizationPolicy
+    name: productpage-viewer-1
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: qa
+    - op: replace
+      path: /spec/selector/matchLabels/app
+      value: details-qa
+- target:
+    kind: AuthorizationPolicy
+    name: productpage-viewer
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: qa
+    - op: replace
+      path: /spec/targetRefs/0/name
+      value: qa-details-service
+
+- target:
+    kind: ClusterRoleBinding
+    name: sa-crb
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: qa
+
+- target:
+    kind: Ingress
+    name: details-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: product.qa.com
+- target:
+    kind: Service
+    name: details-service
+  patch: |-
+    - op: replace
+      path: /spec/selector/app
+      value: details-qa
