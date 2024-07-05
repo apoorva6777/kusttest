@@ -10,38 +10,38 @@ namePrefix: 'vapt-'
 
 images:
 - name: xyz/details-test
-  newName: apoorva6777/details-test
-  newTag: latest
+  newName: iad.ocir.io/idmaqhrbiuyo/nest-readiness-check
+  newTag: v0.0.2
 
 replicas:
-- name: details-deployment
-  count: 2
+- name: nest-ms-deployment
+  count: 1
 
 patches:
 - target:
     kind: HorizontalPodAutoscaler
-    name: vapt-details-deployment-hpa
+    name: vapt-nest-ms-deployment-hpa
   patch: |-
     - op: replace
       path: /metadata/name
-      value: details-deployment-hpa
+      value: nest-ms-deployment-hpa
     - op: replace
       path: /spec/minReplicas
-      value: "2"
+      value: "1"
 
 - target:
     kind: Deployment
-    name: details-deployment
+    name: nest-ms-deployment
   patch: |-
     - op: replace
       path: /metadata/name
-      value: details-deployment-vapt
+      value: nest-ms-deployment
     - op: replace
       path: /spec/template/metadata/labels/app
-      value: details-vapt
+      value: nest-ms-vapt
     - op: replace
       path: /spec/selector/matchLabels/app
-      value: details-vapt
+      value: nest-ms-vapt
 
 - target:
     kind: AuthorizationPolicy
@@ -52,7 +52,7 @@ patches:
       value: vapt
     - op: replace
       path: /spec/selector/matchLabels/app
-      value: details-vapt
+      value: nest-ms-vapt
 - target:
     kind: AuthorizationPolicy
     name: productpage-viewer
@@ -62,7 +62,7 @@ patches:
       value: vapt
     - op: replace
       path: /spec/targetRefs/0/name
-      value: vapt-details-service
+      value: vapt-nest-ms-service
 
 - target:
     kind: ClusterRoleBinding
@@ -74,15 +74,15 @@ patches:
 
 - target:
     kind: Ingress
-    name: details-ingress
+    name: nest-ms-ingress
   patch: |-
     - op: replace
       path: /spec/rules/0/host
-      value: product.vapt.com
+      value: onboarding.vapt.com
 - target:
     kind: Service
-    name: details-service
+    name: nest-ms-service
   patch: |-
     - op: replace
       path: /spec/selector/app
-      value: details-vapt
+      value: nest-ms-vapt
