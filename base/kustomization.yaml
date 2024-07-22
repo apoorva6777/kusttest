@@ -8,3 +8,4 @@ resources:
 - ingress.yaml
 - l4-service-to-service-auth-policy.yaml
 - l7-principal-operations-auth-policy.yaml
+- gateway.yaml

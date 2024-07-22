@@ -86,3 +86,31 @@ patches:
     - op: replace
       path: /spec/selector/app
       value: nest-ms-dev
+
+
+- target:
+    kind: Gateway
+    name: nest-ms-gateway
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: dvss-apps-ns-dev
+    - op: replace
+      path: /spec/servers/0/hosts/0
+      value: onboarding.dev.com
+- target:
+    kind: VirtualService
+    name: nest-ms-virtualservice
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: dvss-apps-ns-dev
+    - op: replace
+      path: /spec/hosts/0
+      value: onboarding.dev.com
+    - op: replace
+      path: /spec/gateways/0
+      value: dev-nest-ms-gateway
+    - op: replace
+      path: /spec/http/0/route/0/destination/host
+      value: dev-nest-ms-service
